@@ -7,7 +7,7 @@ import Ground from "./components/Ground";
 function App() {
   return (
     <Canvas>
-      <directionalLight position={[0, 1, 2]} intensity={0.8} />
+      <directionalLight position={[10, 12, 6]} intensity={0.8} />
       <ambientLight intensity={0.2} />
       <Physics>
         <Ball />
