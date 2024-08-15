@@ -7,7 +7,7 @@ import Ground from "./components/Ground";
 function App() {
   return (
     <Canvas
-        camera={{ fov: 70, position: [4, 2, 0] }}
+        camera={{ fov: 50, position: [1, 2, 6] }}
         shadows
       >
         {/* <color attach="background" args={['#171720']} /> */}
@@ -33,7 +33,7 @@ function App() {
           friction: 0.9,
           frictionEquationRelaxation: 2,
           frictionEquationStiffness: 1e7,
-          restitution: 0.7,
+          restitution: 0.4,
         }}
         gravity={[0, -50, 0]}
         allowSleep={false}
@@ -42,6 +42,7 @@ function App() {
         
         <Ground />
       </Physics>
+      <axesHelper args={[5]} />
     </Canvas>
   );
 }
