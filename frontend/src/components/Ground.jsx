@@ -1,15 +1,20 @@
 import { usePlane } from "@react-three/cannon";
+import { useRef } from "react";
 
 export default function Ground() {
-  const [ref] = usePlane(() => ({
-    rotation: [-Math.PI / 2, 0, 0],
-    position: [0, -2, 0],
-  }));
-
+  const [ref] = usePlane(
+    () => ({
+      position: [0, -1, 0],
+      rotation: [-Math.PI / 2, 0, 0],
+      type: "Static",
+    }),
+    useRef(null),
+  );
   return (
-    <mesh ref={ref}>
-      <planeGeometry args={[100, 100]} />
-      <meshStandardMaterial color="lightgreen" />
+    <mesh ref={ref} receiveShadow>
+      <planeGeometry args={[1000, 1000]} />
+      <meshPhongMaterial color="#172017" />
     </mesh>
   );
 }
+
