@@ -3,31 +3,42 @@ import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import { lerp } from "three/src/math/MathUtils.js";
 
+const MIN_HEIGHT = -0.5; // Minimum height for the ball
+
 export default function Ball() {
   // const map = useLoader(TextureLoader, earthImg)
   const [ref, api] = useSphere(
-    () => ({ args: [0.75], mass: 5, position: [0, 5, 0], restitution: 1 }),
-    useRef(null),
+    () => ({
+      args: [0.75],
+      mass: 5,
+      position: [0, 5, 0],
+      restitution: 0.4,
+      type: "Dynamic",
+    }),
+    useRef(null)
   );
 
+  const pointerRef = useRef();
   const [holding, setHolding] = useState(false);
 
   const values = useRef([0, 0]);
-  useFrame((state) => {
+  const currentPosition = useRef([0, 0, 0]);
+  api.position.subscribe((pos) => {
+    currentPosition.current = pos;
+  });
+  
+  useFrame(({ pointer: { x, y }, viewport: { height, width } }) => {
     if (holding) {
       setUnaffectedByGravity(api);
-      values.current[0] = lerp(
-        values.current[0],
-        (state.pointer.x * Math.PI) / 5,
-        0.2,
-      );
-      values.current[1] = lerp(
-        values.current[1],
-        (state.pointer.y * Math.PI) / 5,
-        0.2,
-      );
-      api.position.set(state.pointer.x * 5, state.pointer.y * 5, 0);
-      api.rotation.set(0, 0, values.current[1]);
+
+      const newPositionX = (x * width) / 2;
+      // Ensure newPositionY does not go below MIN_HEIGHT
+      const newPositionY = y < MIN_HEIGHT
+        ? currentPosition.current[1]
+        : Math.max((y * height) / 2, MIN_HEIGHT);
+
+      api.position.set(newPositionX, newPositionY, 0);
+      // api.rotation.set(0, 0, values.current[1]);
     } else {
       setAffectedByGravity(api);
     }
