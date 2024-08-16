@@ -1,64 +1,64 @@
-import { useSphere } from "@react-three/cannon";
+import { RigidBody } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
-import { lerp } from "three/src/math/MathUtils.js";
+import { useRef, useState, useEffect } from "react";
 
-const MIN_HEIGHT = -0.5; // Minimum height for the ball
+export default function Ball(props) {
+  const ballRef = useRef();
+  const body = useRef();
 
-export default function Ball() {
-  // const map = useLoader(TextureLoader, earthImg)
-  const [ref, api] = useSphere(
-    () => ({
-      args: [0.75],
-      mass: 5,
-      position: [0, 5, 0],
-      restitution: 0.4,
-      type: "Dynamic",
-    }),
-    useRef(null)
-  );
-
-  const pointerRef = useRef();
   const [holding, setHolding] = useState(false);
+  const [launch, setLaunch] = useState(false);
 
-  const values = useRef([0, 0]);
-  const currentPosition = useRef([0, 0, 0]);
-  api.position.subscribe((pos) => {
-    currentPosition.current = pos;
-  });
-  
   useFrame(({ pointer: { x, y }, viewport: { height, width } }) => {
     if (holding) {
-      setUnaffectedByGravity(api);
+      const newPositionX = (x * width) / 2; // Scale pointer x to the viewport width
+      const newPositionY = (y * height) / 2; // Scale pointer y to the viewport height
 
-      const newPositionX = (x * width) / 2;
-      // Ensure newPositionY does not go below MIN_HEIGHT
-      const newPositionY = y < MIN_HEIGHT
-        ? currentPosition.current[1]
-        : Math.max((y * height) / 2, MIN_HEIGHT);
-
-      api.position.set(newPositionX, newPositionY, 0);
-      // api.rotation.set(0, 0, values.current[1]);
-    } else {
-      setAffectedByGravity(api);
+      body.current.setTranslation({ x: newPositionX, y: newPositionY -3, z: 2 });
+      body.current.setLinvel({ x: 0, y: 0, z: 0 });
+      body.current.setAngvel({ x: 0, y: 0, z: 0 });
+    } else if (launch) {
+      body.current.setLinvel({ x: 0, y: 10, z: -20 });
+      setLaunch(false);
     }
   });
 
-  const setUnaffectedByGravity = (api) => {
-    api.velocity.set(0, 0, 0);
-    api.angularVelocity.set(0, 0, 0);
-    api.mass.set(0);
-  };
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === "Space") {
+        setHolding(false);
+        setLaunch(true);
+      }
+    };
 
-  const setAffectedByGravity = (api) => {
-    api.mass.set(5);
-  };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
-    <mesh castShadow ref={ref} onClick={() => setHolding(true)}>
-      <sphereGeometry args={[0.5, 64, 64]} />
-      {/* <meshStandardMaterial map={map} /> */}
-      <meshStandardMaterial />
-    </mesh>
+    <RigidBody
+      ref={body}
+      name="ball"
+      colliders="ball"
+      mass={2}
+      restitution={0.6}
+      friction={1}
+      linearDamping={1}
+      angularDamping={1}
+      {...props}
+    >
+      <mesh
+        ref={ballRef}
+        castShadow
+        position={[0, 4, 2]}
+        onClick={() => setHolding(!holding)}
+      >
+        <sphereGeometry args={[0.5, 32, 32]} />
+        <meshStandardMaterial color="#FFDE91" />
+      </mesh>
+    </RigidBody>
   );
 }
