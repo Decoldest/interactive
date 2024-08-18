@@ -10,7 +10,7 @@ export default function Ball(props) {
   const startThrowTime = useRef();
   const endThrowTime = useRef();
   const minHeight = -3.5;
-  const VELOCITY_THRESHOLD = 1;
+  const VELOCITY_THRESHOLD = 2;
   const NORMALIZATION_FACTOR = 100;
 
   useFrame(({ pointer: { x, y }, viewport: { height, width } }) => {
