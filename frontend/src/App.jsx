@@ -3,7 +3,6 @@ import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import Ball from "./components/Ball";
 import Ground from "./components/Ground";
-import BallTest from "./components/BallTest";
 import Obj from "./components/Obj";
 import { OrthographicCamera, OrbitControls } from "@react-three/drei";
 import { useState } from "react";
@@ -11,10 +10,9 @@ import * as THREE from "three";
 
 function App() {
   const xyPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-  const xzPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
   return (
-    <Canvas camera={{ fov: 50, position: [4, 4, 25] }} shadows>
+    <Canvas camera={{ fov: 60, position: [4, 4, 25] }} shadows>
       {/* <color attach="background" args={['#171720']} /> */}
       <ambientLight intensity={2} />
       {/* <pointLight decay={2} intensity={1} position={[0, 0, 0]} /> */}
