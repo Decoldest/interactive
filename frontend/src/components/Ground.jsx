@@ -12,7 +12,7 @@ export default function Ground(props) {
     >
       <mesh receiveShadow>
         <planeGeometry args={[1000, 1000]} />
-        <meshStandardMaterial color="#172017" />
+        <meshPhysicalMaterial color="#172017" />
       </mesh>
     </RigidBody>
   );
