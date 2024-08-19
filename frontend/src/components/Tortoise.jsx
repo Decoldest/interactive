@@ -6,9 +6,9 @@ Command: npx gltfjsx@6.5.0 public/models/tortoise.gltf
 import React from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
 
-export function Model(props) {
+export default function Tortoise(props) {
   const group = React.useRef()
-  const { nodes, materials, animations } = useGLTF('/tortoise.gltf')
+  const { nodes, materials, animations } = useGLTF('./models/tortoise.gltf')
   const { actions } = useAnimations(animations, group)
   return (
     <group ref={group} {...props} dispose={null}>
@@ -60,4 +60,4 @@ export function Model(props) {
   )
 }
 
-useGLTF.preload('/tortoise.gltf')
+useGLTF.preload('./models/tortoise.gltf')
