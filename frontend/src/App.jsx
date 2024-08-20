@@ -11,14 +11,9 @@ import * as THREE from "three";
 
 function App() {
   const xyPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-  const [ballPosition, setBallPosition] = useState(null);
   const [thrown, setThrown] = useState(false);
   const [caught, setCaught] = useState(false);
   const ballRef = useRef();
-
-  const changeBallPosition = (coordinates) => {
-    setBallPosition(coordinates);
-  };
 
   const updateBallThrown = (isThrown) => {
     setThrown(isThrown);
@@ -51,21 +46,20 @@ function App() {
         shadow-bias={-0.0001}
       />
       <Physics
-        gravity={[0, -20, 0]}
+        gravity={[0, -30, 0]}
         // Rapier specific configuration if needed
       >
         <planeHelper args={[xyPlane, 10, "red"]} />
 
         <Obj
           xyPlane={xyPlane}
-          changeBallPosition={changeBallPosition}
           thrown={thrown}
           updateBallThrown={updateBallThrown}
+          ref={ballRef}
         />
         {/* <Tortoise position={[0, 2, -2]} /> */}
         <TestTortoise
           ballRef={ballRef}
-          ballPosition={ballPosition}
           thrown={thrown}
           caught={caught}
           handleCaughtBall={handleCaughtBall}

@@ -4,18 +4,13 @@ import * as THREE from "three";
 import PropTypes from "prop-types";
 import { RigidBody } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
+import { forwardRef } from 'react';
 
-Obj.propTypes = {
-  xyPlane: PropTypes.object,
-  changeBallPosition: PropTypes.func,
-  thrown: PropTypes.bool,
-  updateBallThrown: PropTypes.func,
-};
+const Obj = forwardRef(function Obj(props, body) {
+  const { xyPlane, thrown, updateBallThrown } = props;
 
-function Obj({ xyPlane, changeBallPosition, thrown, updateBallThrown }) {
   const MIN_HEIGHT = 0.5;
   let planeIntersectPointXY = new THREE.Vector3();
-  const body = useRef();
 
   // Store previous position and time for velocity calculation
   const prevPosition = useRef(new THREE.Vector3());
@@ -63,18 +58,6 @@ function Obj({ xyPlane, changeBallPosition, thrown, updateBallThrown }) {
     { delay: true }
   );
 
-  useFrame(() => {
-    if (body.current && thrown) {
-      const currentPosition = body.current.translation();
-      changeBallPosition(
-        new THREE.Vector3(
-          currentPosition.x,
-          currentPosition.y,
-          currentPosition.z
-        )
-      );
-    }
-  });
 
   return (
     <RigidBody
@@ -95,6 +78,14 @@ function Obj({ xyPlane, changeBallPosition, thrown, updateBallThrown }) {
       </mesh>
     </RigidBody>
   );
-}
+});
+
+
+Obj.propTypes = {
+  xyPlane: PropTypes.object,
+  changeBallPosition: PropTypes.func,
+  thrown: PropTypes.bool,
+  updateBallThrown: PropTypes.func,
+};
 
 export default Obj;

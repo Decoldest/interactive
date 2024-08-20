@@ -8,16 +8,16 @@ import * as THREE from "three";
 useGLTF.preload("./models/tortoise.glb");
 
 TestTortoise.propTypes = {
+  ballRef: PropTypes.object,
   thrown: PropTypes.bool,
-  ballPosition: PropTypes.object,
   caught: PropTypes.bool,
   handleCaughtBall: PropTypes.func,
   handleReturnBall: PropTypes.func,
 };
 
 export default function TestTortoise({
+  ballRef,
   thrown,
-  ballPosition,
   caught,
   handleCaughtBall,
   handleReturnBall,
@@ -48,18 +48,16 @@ export default function TestTortoise({
       actions.idle.play();
     } else {
       actions.walking.play();
+      actions.walking.timeScale = 3;
     }
   }, [isMoving, actions]);
 
   useFrame(() => {
-    if (thrown && ballPosition && tortoiseBody.current) {
-      const targetPosition = ballPosition;
+    if (thrown && ballRef && tortoiseBody.current) {
+      const targetPosition = ballRef.current.translation();;
       goFetch(targetPosition.x, targetPosition.z);
     }
-    if (thrown && ballPosition && tortoiseBody.current) {
-      const targetPosition = ballPosition;
-      goFetch(targetPosition.x, targetPosition.z);
-    }
+
 
     if (caught) {
       console.log("returning");
