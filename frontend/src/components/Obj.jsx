@@ -1,13 +1,12 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useDrag } from "@use-gesture/react";
 import * as THREE from "three";
 import PropTypes from "prop-types";
 import { RigidBody } from "@react-three/rapier";
-import { useFrame } from "@react-three/fiber";
 import { forwardRef } from 'react';
 
 const Obj = forwardRef(function Obj(props, body) {
-  const { xyPlane, thrown, updateBallThrown } = props;
+  const { xyPlane, updateBallThrown } = props;
 
   const MIN_HEIGHT = 0.5;
   let planeIntersectPointXY = new THREE.Vector3();
@@ -67,7 +66,7 @@ const Obj = forwardRef(function Obj(props, body) {
       colliders={"ball"}
       friction={1}
       restitution={0.6}
-      linearDamping={0.5} // Apply slight damping to reduce erratic bouncing
+      linearDamping={0.5}
       angularDamping={0.5}
       position={[0, 10, 0]}
       name="ball"
@@ -83,8 +82,6 @@ const Obj = forwardRef(function Obj(props, body) {
 
 Obj.propTypes = {
   xyPlane: PropTypes.object,
-  changeBallPosition: PropTypes.func,
-  thrown: PropTypes.bool,
   updateBallThrown: PropTypes.func,
 };
 

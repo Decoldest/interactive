@@ -14,6 +14,7 @@ function App() {
   const [thrown, setThrown] = useState(false);
   const [caught, setCaught] = useState(false);
   const ballRef = useRef();
+  const tortoiseRef = useRef();
 
   const updateBallThrown = (isThrown) => {
     setThrown(isThrown);
@@ -26,8 +27,7 @@ function App() {
   const handleReturnBall = () => {
     setCaught(false);
     setThrown(false);
-    console.log("returned");
-  };
+   };
 
   return (
     <Canvas camera={{ fov: 60, position: [2, 4, 15] }} shadows>
@@ -53,21 +53,19 @@ function App() {
 
         <Obj
           xyPlane={xyPlane}
-          thrown={thrown}
           updateBallThrown={updateBallThrown}
           ref={ballRef}
         />
-        {/* <Tortoise position={[0, 2, -2]} /> */}
         <TestTortoise
           ballRef={ballRef}
           thrown={thrown}
           caught={caught}
           handleCaughtBall={handleCaughtBall}
           handleReturnBall={handleReturnBall}
+          ref={tortoiseRef}
         />
 
         <Ground />
-        {/* <Ball position={[0, 0, 4]} /> */}
       </Physics>
       <axesHelper args={[5]} />
       <gridHelper args={[10, 10]} />

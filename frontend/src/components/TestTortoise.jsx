@@ -1,28 +1,15 @@
-import React, { useRef, useEffect, useState, Children } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
-import { RigidBody, quat } from "@react-three/rapier";
+import { RigidBody } from "@react-three/rapier";
 import PropTypes from "prop-types";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { forwardRef } from "react";
 
 useGLTF.preload("./models/tortoise.glb");
 
-TestTortoise.propTypes = {
-  ballRef: PropTypes.object,
-  thrown: PropTypes.bool,
-  caught: PropTypes.bool,
-  handleCaughtBall: PropTypes.func,
-  handleReturnBall: PropTypes.func,
-};
-
-export default function TestTortoise({
-  ballRef,
-  thrown,
-  caught,
-  handleCaughtBall,
-  handleReturnBall,
-}) {
-  const tortoiseBody = useRef();
+const TestTortoise = forwardRef(function TestTortoise(props, tortoiseBody) {
+  const { ballRef, thrown, caught, handleCaughtBall, handleReturnBall } = props;
   const group = useRef(null);
   const { nodes, materials, animations, scene } = useGLTF(
     "./models/tortoise.glb"
@@ -53,29 +40,55 @@ export default function TestTortoise({
   }, [isMoving, actions]);
 
   useFrame(() => {
+    // Fetch ball
     if (thrown && ballRef && tortoiseBody.current) {
-      const targetPosition = ballRef.current.translation();;
+      const targetPosition = ballRef.current.translation();
       goFetch(targetPosition.x, targetPosition.z);
     }
 
-
+    // Return ball
     if (caught) {
-      console.log("returning");
-
       goFetch(RETURN_POSITION[0], RETURN_POSITION[2]);
 
       const tortoisePosition = tortoiseBody.current.translation();
 
-      // Check if the tortoise has reached the initial position
+      const tortoiseRotation = tortoiseBody.current.rotation();
+
+      // Position the ball in front of the tortoise
+      if (ballRef.current && tortoiseBody.current) {
+        const tortoiseFrontPosition = new THREE.Vector3(
+          tortoisePosition.x - tortoiseRotation.y * tortoiseRotation.w * 4,
+          tortoisePosition.y + 1.25,
+          tortoisePosition.z + ((0.5 - Math.abs(tortoiseRotation.y * tortoiseRotation.w)) * 7)
+        );
+
+        ballRef.current.setTranslation(
+          {
+            x: tortoiseFrontPosition.x,
+            y: tortoiseFrontPosition.y,
+            z: tortoiseFrontPosition.z,
+          },
+          true
+        );
+      }
+
+      // Check if the tortoise has reached the return position
       if (
         Math.abs(tortoisePosition.x - RETURN_POSITION[0]) <= 0.1 &&
         Math.abs(tortoisePosition.z - RETURN_POSITION[2]) <= 0.1
       ) {
+        releaseBall();
         handleReturnBall();
         setIsMoving(false);
       }
     }
   });
+
+  const releaseBall = () => {
+    actions.spit.play();
+    ballRef.current.setLinvel({ x: 0, y: 0, z: 5 }, true);
+    actions.spit.stop();
+  };
 
   function goFetch(targetX, targetZ) {
     const tortoisePosition = tortoiseBody.current.translation();
@@ -104,9 +117,8 @@ export default function TestTortoise({
       quaternion.setFromEuler(euler.set(0, angle, 0))
     );
   }
-
   const handleCollisionWithBall = (e) => {
-    if (e.other.rigidBodyObject && e.other.rigidBodyObject.name === "ball") {
+    if (e.other.rigidBodyObject && e.other.rigidBodyObject.name === "ball" && !caught) {
       handleCaughtBall();
     }
   };
@@ -124,4 +136,14 @@ export default function TestTortoise({
       </group>
     </RigidBody>
   );
-}
+});
+
+TestTortoise.propTypes = {
+  ballRef: PropTypes.object,
+  thrown: PropTypes.bool,
+  caught: PropTypes.bool,
+  handleCaughtBall: PropTypes.func,
+  handleReturnBall: PropTypes.func,
+};
+
+export default TestTortoise;
