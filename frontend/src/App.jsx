@@ -1,20 +1,32 @@
 import "./App.css";
 import { Canvas } from "@react-three/fiber";
-import { Physics } from "@react-three/rapier";
+import { Physics, useRapier } from "@react-three/rapier";
 import Ball from "./components/Ball";
 import Ground from "./components/Ground";
 import Obj from "./components/Obj";
 import Tortoise from "./components/Tortoise";
-import TestTortoise from "../TestTortoise";
-import { OrthographicCamera, OrbitControls } from "@react-three/drei";
-import { useState } from "react";
+import TestTortoise from "./components/TestTortoise";
+import { useRef, useState } from "react";
 import * as THREE from "three";
+
 
 function App() {
   const xyPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  const [ballPosition, setBallPosition] = useState(null);
+  const [thrown, setThrown] = useState(false);
+  const [caught, setCaught] = useState(false);
+  const ballRef = useRef();
+
+  const changeBallPosition = (coordinates) => {
+    setBallPosition(coordinates);
+  };
+
+  const updateBallThrown = (isThrown) => {
+    setThrown(isThrown);
+  };
 
   return (
-    <Canvas camera={{ fov: 60, position: [4, 4, 15] }} shadows>
+    <Canvas camera={{ fov: 60, position: [2, 4, 15] }} shadows>
       {/* <color attach="background" args={['#171720']} /> */}
       <ambientLight intensity={2} />
       {/* <pointLight decay={2} intensity={1} position={[0, 0, 0]} /> */}
@@ -35,9 +47,21 @@ function App() {
       >
         <planeHelper args={[xyPlane, 10, "red"]} />
 
-        <Obj xyPlane={xyPlane} />
+        <Obj
+          xyPlane={xyPlane}
+          changeBallPosition={changeBallPosition}
+          thrown={thrown}
+          updateBallThrown={updateBallThrown}
+        />
         {/* <Tortoise position={[0, 2, -2]} /> */}
-        <TestTortoise position={[2, 0, -2]} rotation={[0, Math.PI, 0]} />
+        <TestTortoise
+          ballRef={ballRef}
+          ballPosition={ballPosition}
+          thrown={thrown}
+          caught={caught}
+          setCaught={setCaught}
+        />
+      
         <Ground />
         {/* <Ball position={[0, 0, 4]} /> */}
       </Physics>

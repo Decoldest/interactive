@@ -3,16 +3,20 @@ import { useDrag } from "@use-gesture/react";
 import * as THREE from "three";
 import PropTypes from "prop-types";
 import { RigidBody } from "@react-three/rapier";
+import { useFrame } from "@react-three/fiber";
 
 Obj.propTypes = {
   xyPlane: PropTypes.object,
+  changeBallPosition: PropTypes.func,
+  thrown: PropTypes.bool,
+  updateBallThrown: PropTypes.func,
 };
 
-function Obj({ xyPlane }) {
+function Obj({ xyPlane, changeBallPosition, thrown, updateBallThrown }) {
   const MIN_HEIGHT = 0.5;
   let planeIntersectPointXY = new THREE.Vector3();
   const body = useRef();
-  
+
   // Store previous position and time for velocity calculation
   const prevPosition = useRef(new THREE.Vector3());
   const prevTime = useRef(0);
@@ -21,7 +25,6 @@ function Obj({ xyPlane }) {
 
   const bind = useDrag(
     ({ active, movement: [x, y], timeStamp, event }) => {
-
       // Use raycaster to check position
       event.ray.intersectPlane(xyPlane, planeIntersectPointXY);
       const clampYPosition = Math.max(planeIntersectPointXY.y, MIN_HEIGHT);
@@ -47,20 +50,31 @@ function Obj({ xyPlane }) {
         // Update ball position
         body.current.setTranslation(coordinates);
         body.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
-        console.log(velocity);
-        
+
         // Prevent linear velocity on the ball for simple dragging
         if (velocity.y > VELOCITY_THRESHOLD) {
           body.current.setLinvel(velocity, true);
+          updateBallThrown(true);
         } else {
           body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
         }
-
-
       }
     },
     { delay: true }
   );
+
+  useFrame(() => {
+    if (body.current && thrown) {
+      const currentPosition = body.current.translation();
+      changeBallPosition(
+        new THREE.Vector3(
+          currentPosition.x,
+          currentPosition.y,
+          currentPosition.z
+        )
+      );
+    }
+  });
 
   return (
     <RigidBody
@@ -73,6 +87,7 @@ function Obj({ xyPlane }) {
       linearDamping={0.5} // Apply slight damping to reduce erratic bouncing
       angularDamping={0.5}
       position={[0, 10, 0]}
+      name="ball"
     >
       <mesh castShadow>
         <sphereGeometry attach="geometry" args={[0.5, 32, 32]} />
