@@ -9,7 +9,6 @@ import TestTortoise from "./components/TestTortoise";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 
-
 function App() {
   const xyPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
   const [ballPosition, setBallPosition] = useState(null);
@@ -23,6 +22,16 @@ function App() {
 
   const updateBallThrown = (isThrown) => {
     setThrown(isThrown);
+  };
+
+  const handleCaughtBall = () => {
+    setCaught(true);
+  };
+
+  const handleReturnBall = () => {
+    setCaught(false);
+    setThrown(false);
+    console.log("returned");
   };
 
   return (
@@ -59,9 +68,10 @@ function App() {
           ballPosition={ballPosition}
           thrown={thrown}
           caught={caught}
-          setCaught={setCaught}
+          handleCaughtBall={handleCaughtBall}
+          handleReturnBall={handleReturnBall}
         />
-      
+
         <Ground />
         {/* <Ball position={[0, 0, 4]} /> */}
       </Physics>
