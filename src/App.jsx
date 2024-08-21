@@ -76,7 +76,7 @@ function App() {
         <Text
           color="white"
           fontSize={0.5}
-          position={[0, 5, -5]}
+          position={[1, 6, -5]}
           anchorX="center"
           anchorY="middle"
         >
