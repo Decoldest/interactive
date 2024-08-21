@@ -11,7 +11,7 @@ useGLTF.preload("./models/tortoise.glb");
 const Tortoise = forwardRef(function Tortoise(props, tortoiseBody) {
   const { ballRef, thrown, caught, handleCaughtBall, handleReturnBall } = props;
   const group = useRef(null);
-  const { nodes, materials, animations, scene } = useGLTF(
+  const { animations, scene } = useGLTF(
     "./models/tortoise.glb"
   );
   const { actions } = useAnimations(animations, group);

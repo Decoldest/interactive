@@ -47,10 +47,9 @@ function App() {
       />
       <ambientLight intensity={2} />
       <spotLight
-        angle={0.6}
         castShadow
         decay={0}
-        intensity={Math.PI}
+        intensity={2}
         penumbra={1}
         position={[10, 10, 10]}
         shadow-mapSize-width={2048}
