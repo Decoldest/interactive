@@ -58,7 +58,7 @@ const Ball = forwardRef(function Ball(props, body) {
         }
       }
     },
-    { delay: true }
+    { delay: true, pointerEvents: true }
   );
 
   return (
