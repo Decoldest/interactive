@@ -1,11 +1,9 @@
 import "./App.css";
 import { Canvas } from "@react-three/fiber";
-import { Physics, useRapier } from "@react-three/rapier";
+import { Physics } from "@react-three/rapier";
 import Ball from "./components/Ball";
 import Ground from "./components/Ground";
-import Obj from "./components/Obj";
 import Tortoise from "./components/Tortoise";
-import TestTortoise from "./components/TestTortoise";
 import { useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -27,10 +25,10 @@ function App() {
   const handleReturnBall = () => {
     setCaught(false);
     setThrown(false);
-   };
+  };
 
   return (
-    <Canvas camera={{ fov: 60, position: [2, 4, 15] }} shadows>
+    <Canvas camera={{ fov: 60, position: [1, 4, 10] }} shadows>
       {/* <color attach="background" args={['#171720']} /> */}
       <ambientLight intensity={2} />
       {/* <pointLight decay={2} intensity={1} position={[0, 0, 0]} /> */}
@@ -51,12 +49,12 @@ function App() {
       >
         <planeHelper args={[xyPlane, 10, "red"]} />
 
-        <Obj
+        <Ball
           xyPlane={xyPlane}
           updateBallThrown={updateBallThrown}
           ref={ballRef}
         />
-        <TestTortoise
+        <Tortoise
           ballRef={ballRef}
           thrown={thrown}
           caught={caught}
