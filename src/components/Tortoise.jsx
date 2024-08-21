@@ -95,7 +95,7 @@ const Tortoise = forwardRef(function Tortoise(props, tortoiseBody) {
       spit.stop();
     }, 2000);
 
-    ballRef.current.setLinvel({ x: 0, y: 0, z: 3 }, true);
+    ballRef.current.setLinvel({ x: 0, y: 0, z: 3.5 }, true);
   };
 
   function goFetch(targetX, targetZ) {

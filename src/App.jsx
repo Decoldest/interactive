@@ -45,11 +45,11 @@ function App() {
         inclination={0.49}
         azimuth={0.25}
       />
-      <ambientLight intensity={2} />
+      <ambientLight intensity={3} />
       <spotLight
         castShadow
         decay={0}
-        intensity={2}
+        intensity={3}
         penumbra={1}
         position={[10, 10, 10]}
         shadow-mapSize-width={2048}
