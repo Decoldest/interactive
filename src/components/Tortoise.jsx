@@ -79,17 +79,23 @@ const Tortoise = forwardRef(function Tortoise(props, tortoiseBody) {
         Math.abs(tortoisePosition.x - RETURN_POSITION[0]) <= 0.1 &&
         Math.abs(tortoisePosition.z - RETURN_POSITION[2]) <= 0.1
       ) {
+        setIsMoving(false);
         releaseBall();
         handleReturnBall();
-        setIsMoving(false);
       }
     }
   });
 
   const releaseBall = () => {
-    actions.spit.play();
-    ballRef.current.setLinvel({ x: 0, y: 0, z: 5 }, true);
-    actions.spit.stop();
+    const { spit } = actions;
+
+    // Play animation, then stop after approximate end of loop
+    spit.play();
+    setTimeout(() => {
+      spit.stop();
+    }, 2000);
+
+    ballRef.current.setLinvel({ x: 0, y: 0, z: 3 }, true);
   };
 
   function goFetch(targetX, targetZ) {
@@ -119,6 +125,7 @@ const Tortoise = forwardRef(function Tortoise(props, tortoiseBody) {
       quaternion.setFromEuler(euler.set(0, angle, 0))
     );
   }
+
   const handleCollisionWithBall = (e) => {
     if (
       e.other.rigidBodyObject &&

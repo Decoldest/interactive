@@ -28,7 +28,15 @@ function App() {
   };
 
   return (
-    <Canvas camera={{ fov: 60, position: [1, 4, 10] }} shadows>
+    <Canvas
+      camera={{
+        fov: 60,
+        position: [1, 3, 8],
+        rotation: [Math.PI / 90, 0, 0], // Rotate camera 45 degrees on x and y axes
+        zoom: 1, // Default zoom
+      }}
+      shadows
+    >
       {/* <color attach="background" args={['#171720']} /> */}
       <ambientLight intensity={2} />
       {/* <pointLight decay={2} intensity={1} position={[0, 0, 0]} /> */}
@@ -47,7 +55,6 @@ function App() {
         gravity={[0, -30, 0]}
         // Rapier specific configuration if needed
       >
-        <planeHelper args={[xyPlane, 10, "red"]} />
 
         <Ball
           xyPlane={xyPlane}
@@ -65,8 +72,6 @@ function App() {
 
         <Ground />
       </Physics>
-      <axesHelper args={[5]} />
-      <gridHelper args={[10, 10]} />
     </Canvas>
   );
 }
