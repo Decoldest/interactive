@@ -3,10 +3,14 @@ import { useDrag } from "@use-gesture/react";
 import * as THREE from "three";
 import PropTypes from "prop-types";
 import { RigidBody } from "@react-three/rapier";
-import { forwardRef } from 'react';
+import { forwardRef } from "react";
+import { useGLTF } from "@react-three/drei";
+
+useGLTF.preload("./models/pixar_ball.glb");
 
 const Ball = forwardRef(function Ball(props, body) {
   const { xyPlane, updateBallThrown } = props;
+  const { scene } = useGLTF("./models/pixar_ball.glb");
 
   const MIN_HEIGHT = 0.5;
   let planeIntersectPointXY = new THREE.Vector3();
@@ -70,14 +74,12 @@ const Ball = forwardRef(function Ball(props, body) {
       position={[0, 10, 0]}
       name="ball"
     >
-      <mesh castShadow receiveShadow>
-        <sphereGeometry attach="geometry" args={[0.5, 32, 32]} />
-        {/* <meshNormalMaterial attach="material" /> */}
-      </mesh>
+      <group position={[0, -0.5, 0]}>
+        <primitive object={scene} scale={0.5} />
+      </group>
     </RigidBody>
   );
 });
-
 
 Ball.propTypes = {
   xyPlane: PropTypes.object,

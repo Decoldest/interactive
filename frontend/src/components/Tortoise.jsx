@@ -49,6 +49,8 @@ const Tortoise = forwardRef(function Tortoise(props, tortoiseBody) {
     // Return ball
     if (caught) {
       goFetch(RETURN_POSITION[0], RETURN_POSITION[2]);
+      ballRef.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      ballRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
 
       const tortoisePosition = tortoiseBody.current.translation();
       const tortoiseRotation = tortoiseBody.current.rotation();
